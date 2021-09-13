@@ -1,4 +1,4 @@
-package com.customuserdetailsservice.demo.model;
+package nl.novi.stuivenberg.springboot.example.security.domain;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,17 +11,20 @@ public class Lesson {
     private long id;
 
     @Column
-    private String lessonDescription;
+    private String title;
 
     @Lob
     private byte[] classVideo;
+
+    @Lob
+    private byte[] lessonGuide;
 
     //RELATIONSHIP ANNOTATIONS
     @OneToMany (mappedBy = "lesson")
     private List<Agenda> agenda;
 
-    @ManyToOne
-    private Teacher teacher;
+//    @ManyToOne
+//    private User user;
 
     //GETTERS & SETTERS
     public long getId() {
@@ -32,12 +35,12 @@ public class Lesson {
         this.id = id;
     }
 
-    public String getLessonDescription() {
-        return lessonDescription;
+    public String getTitle() {
+        return title;
     }
 
-    public void setLessonDescription(String lessonDescription) {
-        this.lessonDescription = lessonDescription;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public byte[] getClassVideo() {
@@ -47,5 +50,29 @@ public class Lesson {
     public void setClassVideo(byte[] classVideo) {
         this.classVideo = classVideo;
     }
+
+    public byte[] getLessonGuide() {
+        return lessonGuide;
+    }
+
+    public void setLessonGuide(byte[] lessonGuide) {
+        this.lessonGuide = lessonGuide;
+    }
+
+    public List<Agenda> getAgenda() {
+        return agenda;
+    }
+
+    public void setAgenda(List<Agenda> agenda) {
+        this.agenda = agenda;
+    }
+
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 
 }

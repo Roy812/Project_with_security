@@ -1,4 +1,6 @@
-package com.customuserdetailsservice.demo.model;
+package nl.novi.stuivenberg.springboot.example.security.domain;
+
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 
@@ -10,7 +12,13 @@ public class Review {
     private long id;
 
     @Column
+    private String title;
+
+    @Column
     private String review;
+
+    @Column
+    private Long rating;
 
     @Column
     private String teacherReply;
@@ -48,6 +56,22 @@ public class Review {
 
     public void setTeacherReply(String teacherReply) {
         this.teacherReply = teacherReply;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Long getRating() {
+        return rating;
+    }
+
+    public void setRating(Long rating) {
+        this.rating = rating;
     }
 
     public User getUser() {

@@ -1,7 +1,9 @@
 package nl.novi.stuivenberg.springboot.example.security.service;
 
 import nl.novi.stuivenberg.springboot.example.security.domain.Review;
+import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
+import nl.novi.stuivenberg.springboot.example.security.exception.RecordNotFoundException;
 import nl.novi.stuivenberg.springboot.example.security.repository.ReviewRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ReviewServiceForTeacherTest {
+public class ReviewServiceTest {
 
     @Mock
     ReviewRepository reviewRepository;
@@ -51,13 +53,30 @@ public class ReviewServiceForTeacherTest {
         String teacherReply = "reply";
         long reviewId = 1;
 
-//        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
-//        when(reviewRepository.save(review)).thenThrow(BadRequestException.class);
-
         Assertions.assertThrows(BadRequestException.class, () -> reviewService.teacherReply(reviewId, teacherReply));
     }
 
+    @Test
+    public void deleteAgendaSuccess() {
+        //ARRANGE
+        long reviewId = 1;
+        Review review = new Review();
 
+        //ACT
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        reviewService.deleteReview(reviewId);
+
+        //ASSERT
+        verify(reviewRepository).delete(reviewCaptor.capture());
+        Assertions.assertEquals(reviewCaptor.getValue(), review);
+    }
+
+    @Test
+    public void deleteAgendaThrowsException() {
+        long reviewId = 1;
+
+        Assertions.assertThrows(RecordNotFoundException.class, () -> reviewService.deleteReview(reviewId));
+    }
 
 
 }

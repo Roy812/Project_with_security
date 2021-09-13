@@ -2,15 +2,8 @@ package nl.novi.stuivenberg.springboot.example.security.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,6 +24,16 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private Long coinBalance;
+    private Boolean subscribeToNewsletter;
+    @Lob
+    private byte[] profilePicture;
+
+    @OneToMany (mappedBy = "user")
+    private List<Agenda> agenda;
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews;
 
     @ManyToMany
     @JoinTable (name = "user_role",
@@ -42,10 +45,13 @@ public class User {
 
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, Long coinBalance, Boolean subscribeToNewsletter, byte[] profilePicture) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.coinBalance = coinBalance;
+        this.subscribeToNewsletter = subscribeToNewsletter;
+        this.profilePicture = profilePicture;
     }
 
     public long getId() {
@@ -78,6 +84,46 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getCoinBalance() {
+        return coinBalance;
+    }
+
+    public void setCoinBalance(Long coinBalance) {
+        this.coinBalance = coinBalance;
+    }
+
+    public Boolean getSubscribeToNewsletter() {
+        return subscribeToNewsletter;
+    }
+
+    public void setSubscribeToNewsletter(Boolean subscribeToNewsletter) {
+        this.subscribeToNewsletter = subscribeToNewsletter;
+    }
+
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public List<Agenda> getAgenda() {
+        return agenda;
+    }
+
+    public void setAgenda(List<Agenda> agenda) {
+        this.agenda = agenda;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public Set<Role> getRoles() {

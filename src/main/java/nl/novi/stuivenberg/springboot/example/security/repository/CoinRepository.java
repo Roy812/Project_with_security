@@ -1,7 +1,6 @@
-package com.customuserdetailsservice.demo.repository;
+package nl.novi.stuivenberg.springboot.example.security.repository;
 
-
-import com.customuserdetailsservice.demo.model.Coins;
+import nl.novi.stuivenberg.springboot.example.security.domain.Coins;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CoinRepository extends JpaRepository<Coins, Long> {

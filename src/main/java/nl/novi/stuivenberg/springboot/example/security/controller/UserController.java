@@ -1,58 +1,90 @@
-package com.customuserdetailsservice.demo.controller;
+package nl.novi.stuivenberg.springboot.example.security.controller;
 
-import com.customuserdetailsservice.demo.Exception.BadRequestException;
-import com.customuserdetailsservice.demo.model.User;
-import com.customuserdetailsservice.demo.service.UserService;
+import nl.novi.stuivenberg.springboot.example.security.domain.Lesson;
+import nl.novi.stuivenberg.springboot.example.security.domain.Review;
+import nl.novi.stuivenberg.springboot.example.security.domain.User;
+import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
+import nl.novi.stuivenberg.springboot.example.security.service.UserService;
+import nl.novi.stuivenberg.springboot.example.security.service.UserServicePreAuth;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("users")
-public class Usercontroller {
+public class UserController {
 
-    private UserService userService;
+//    private UserService userService;
+    private UserServicePreAuth userServicePreAuth;
 
-    public Usercontroller(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService userService, UserServicePreAuth userServicePreAuth) {
+//        this.userService = userService;
+        this.userServicePreAuth = userServicePreAuth;
     }
 
-    @PostMapping(value = "/add")
-    public ResponseEntity<Object> addUser(@RequestBody User user) {
-        userService.addUser(user);
-        return ResponseEntity.ok("New user added: " + user);
+
+    //FUNCTIONS USER:
+    @PatchMapping(value = "/password/id/{id}")
+    public ResponseEntity<Object> changeUserPassword(@PathVariable("id") long id, @RequestBody String newPassword) {
+//        userService.changePassword(newPassword, id); OLD!!
+//        return ResponseEntity.ok("Password updated from user with id: " + id); OLD!!
+        userServicePreAuth.changePassword(newPassword, id);
+        return ResponseEntity.ok("Password changed");
     }
 
-    @PostMapping(value = "/subscribe/newsletter")
-    public ResponseEntity<Object> subscribeToNewsletter(@RequestBody long userId) {
-        userService.subscribeToNewsletter(userId);
+    @PatchMapping(value = "/newsletter/id/{id}")
+    public ResponseEntity<Object> subscribeToNewsletter(@PathVariable("id") long userId) {
+//        userService.subscribeToNewsletter(userId);
+        userServicePreAuth.subscribeToNewsletter(userId);
         return ResponseEntity.ok("Preferences changed");
     }
 
-    @PatchMapping(value = "/password/id/{id}")
-    public ResponseEntity<Object> changeUserPassword(@PathVariable("id") long id, @RequestBody String newPassword) {
-        userService.changePassword(newPassword, id);
-        return ResponseEntity.ok("Password updated from user with id: " + id);
+    @PatchMapping(value = "/upload/id/{id}")
+    public ResponseEntity<Object> uploadProfilePicture(@PathVariable ("id") long userId, @RequestParam("file") MultipartFile file) throws IOException {
+        userServicePreAuth.uploadProfilePicture(userId, file);
+        return ResponseEntity.ok("Photo Accepted");
     }
 
-    @PostMapping(value = "/upload/id/{id}")
-    public void uploadProfilePicture(@PathVariable ("id") long id, @RequestParam("file") MultipartFile file) {
-        try {
-            userService.uploadPicture(id, file);
-        } catch (Exception e) {
-            throw new BadRequestException();
-        }
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") long userId) {
+        userServicePreAuth.removeUser(userId);
+        return ResponseEntity.ok("User deleted with id: " + userId);
     }
 
-    @GetMapping(value = "/download/id/{id}")
-    public ResponseEntity<byte[]> downloadLessonGuide(@PathVariable ("id") long id) {
-        var downloadbytes = userService.getProfilePicture(id);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"license.pdf\"").body(downloadbytes);
+    @PatchMapping(value = "subtract/coins/id/{id}")
+    public ResponseEntity<Object> subtractCoinsUser(@PathVariable("id") long userId) {
+        userServicePreAuth.subtractCoins(userId);
+        return ResponseEntity.ok("Coins subtracted");
+    }
+
+    @PatchMapping(value = "/balance/id/{id}")
+    public ResponseEntity<Object> updateCoinBalance(@PathVariable ("id") long userId, @RequestBody Long amount) {
+        userServicePreAuth.updateCoinBalance(userId, amount);
+        return ResponseEntity.ok("Balance is updated");
     }
 
 
+    //FUNCTIONS ADMIN:
+    @GetMapping(value = "/username/{username}")
+    public ResponseEntity<Object> findUserByUsername(@PathVariable("username") String username) {
+        User user = userServicePreAuth.getUserWithUsername(username);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping(value = "/password/{password}")
+    public ResponseEntity<Object> findUserByPassword(@PathVariable("password") String password) {
+        User user = userServicePreAuth.getUserWithPassword(password);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping(value = "/id/{id}")
+    public ResponseEntity<Object> findUserById(@PathVariable("id") long userId) {
+        User user = userServicePreAuth.getUserWithId(userId);
+        return ResponseEntity.ok(user);
+    }
 
 }

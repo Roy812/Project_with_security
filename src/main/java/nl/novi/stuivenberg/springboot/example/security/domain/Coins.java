@@ -1,4 +1,4 @@
-package com.customuserdetailsservice.demo.model;
+package nl.novi.stuivenberg.springboot.example.security.domain;
 
 import javax.persistence.*;
 

@@ -1,10 +1,8 @@
-package com.customuserdetailsservice.demo.repository;
+package nl.novi.stuivenberg.springboot.example.security.repository;
 
-import com.customuserdetailsservice.demo.model.Agenda;
+import nl.novi.stuivenberg.springboot.example.security.domain.Agenda;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface AgendaRepository extends JpaRepository<Agenda, Long> {
-//    List<Agenda> findAgendaByUserId(long userId);
+//    Agenda findAgendaByUser_Id(long userId);
 }

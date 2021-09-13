@@ -1,8 +1,8 @@
-package com.customuserdetailsservice.demo.controller;
+package nl.novi.stuivenberg.springboot.example.security.controller;
 
-import com.customuserdetailsservice.demo.Exception.BadRequestException;
-import com.customuserdetailsservice.demo.Exception.RecordNotFoundException;
-import com.customuserdetailsservice.demo.Exception.UserNotFoundException;
+import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
+import nl.novi.stuivenberg.springboot.example.security.exception.RecordNotFoundException;
+import nl.novi.stuivenberg.springboot.example.security.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

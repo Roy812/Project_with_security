@@ -274,3 +274,5 @@ In `src/main/java/nl.novi.stuivenberg.springboot.example.repository.RoleReposito
 We zeggen hier tegen JPA, geef ons een boolean-waarde terug op basis van de gegeven String email. Maar hoe weet JPA wat 
 er verder gedaan moet worden? Dat komt door gebruik van key-woorden in de methode-naam. `existsBy` is zo'n key-woord. 
 `Email` verwijst dan naar de kolomnaam uit de tabel (en de attribuut uit de entity-klasse). 
+"# Project_with_security" 
+"# Project_with_security" 

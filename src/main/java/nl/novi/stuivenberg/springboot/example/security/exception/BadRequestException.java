@@ -1,4 +1,4 @@
-package com.customuserdetailsservice.demo.Exception;
+package nl.novi.stuivenberg.springboot.example.security.exception;
 
 public class BadRequestException extends RuntimeException {
 
