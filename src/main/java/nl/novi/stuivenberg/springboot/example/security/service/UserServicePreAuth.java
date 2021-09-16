@@ -71,7 +71,7 @@ public class UserServicePreAuth {
         return user.get();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER') or ('ADMIN')")
     public User getUserWithId(long userId) {
         User user = userService.getUserWithId(userId);
         return user;
