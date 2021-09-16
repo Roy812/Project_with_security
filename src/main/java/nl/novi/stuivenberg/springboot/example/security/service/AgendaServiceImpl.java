@@ -52,15 +52,15 @@ public class AgendaServiceImpl implements AgendaService {
         }
     }
 
-//    @Override
-//    public Agenda getAgendaByUserId(long userId) {
-//        try {
-//            Agenda agenda = agendaRepository.findAgendaByUser_Id(userId);
-//            return agenda;
-//        }  catch (Exception e) {
-//            throw new RecordNotFoundException();
-//        }
-//    }
+    @Override
+    public List<Agenda> getAllBookings() {
+        try {
+            List<Agenda> list = agendaRepository.findAll();
+            return list;
+        }  catch (Exception e) {
+            throw new RecordNotFoundException();
+        }
+    }
 
 
 }

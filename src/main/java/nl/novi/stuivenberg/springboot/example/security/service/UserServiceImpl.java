@@ -65,11 +65,11 @@ public class UserServiceImpl implements UserService {
 //        return user;
 //    }
 
-    @Override
-    public Optional<User> getUser(String username) {
-//        return Optional.ofNullable(userRepository.findByUsername(username));
-        return userRepository.findByUsername(username);
-    }
+//    @Override
+//    public Optional<User> getUser(String username) {
+////        return Optional.ofNullable(userRepository.findByUsername(username));
+//        return userRepository.findByUsername(username);
+//    }
 
     @Override
     public void subscribeToNewsletter(long userId) {
@@ -130,14 +130,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void subtractCoins(long userId) {
-        try {
            Optional<User> user = userRepository.findById(userId);
            Long coinBalance = user.get().getCoinBalance();
-           user.get().setCoinBalance(coinBalance -1);
-           userRepository.save(user.get());
-        }  catch (Exception e) {
-            throw new BadRequestException();
-        }
+           if (coinBalance >= 1) {
+               user.get().setCoinBalance(coinBalance -1);
+               userRepository.save(user.get());
+           } else {
+               throw new BadRequestException();
+           }
     }
 
     @Override

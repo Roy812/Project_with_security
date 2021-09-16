@@ -5,6 +5,8 @@ import nl.novi.stuivenberg.springboot.example.security.domain.Lesson;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AgendaServicePreAuth {
 
@@ -21,11 +23,11 @@ public class AgendaServicePreAuth {
         return "Agenda added with " + lessonId + " To user with Id: " + userId;
     }
 
-//    @PreAuthorize("hasRole('USER')")
-//    public Agenda getAgendaByUserId(Long userId) {
-//        Agenda agenda = agendaService.getAgendaByUserId(userId);
-//        return agenda;
-//    }
+    @PreAuthorize("hasRole('USER')")
+    public List<Agenda> getAllBookings() {
+        List<Agenda> list = agendaService.getAllBookings();
+        return list;
+    }
 
     //FUNCTIONS FOR ADMIN:
     @PreAuthorize("hasRole('ADMIN')")

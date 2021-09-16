@@ -9,6 +9,9 @@ public class Agenda {
     @GeneratedValue
     private long id;
 
+    @Column
+    private String title;
+
     //RELATIONSHIP ANNOTATIONS
     @ManyToOne
     private User user;
@@ -27,6 +30,14 @@ public class Agenda {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public User getUser() {

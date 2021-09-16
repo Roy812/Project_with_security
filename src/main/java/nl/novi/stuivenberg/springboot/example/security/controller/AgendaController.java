@@ -8,6 +8,8 @@ import nl.novi.stuivenberg.springboot.example.security.service.AgendaServicePreA
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("agenda")
@@ -24,6 +26,12 @@ public class AgendaController {
     public ResponseEntity<Object> addAgenda(@RequestBody addBookingDTO dto) {
         agendaService.addAgenda(dto.userId, dto.lessonId);
         return ResponseEntity.ok("Agenda added");
+    }
+
+    @GetMapping(value = "/find/all")
+    public List<Agenda> getAllBookings() {
+        List<Agenda> list = agendaService.getAllBookings();
+        return list;
     }
 
     //FUNCTIONS FOR ADMIN:

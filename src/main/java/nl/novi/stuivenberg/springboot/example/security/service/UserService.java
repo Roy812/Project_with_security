@@ -10,7 +10,7 @@ public interface UserService {
     //FUNCTIONS USER:
     void changePassword(String newPassword, long id);
 //    User addUser(User user); OLD!!
-    Optional<User> getUser(String username);
+//    Optional<User> getUser(String username);
     void uploadPicture(long id, MultipartFile file) throws IOException;
     void subscribeToNewsletter(long userId);
     byte[] getProfilePicture(long id);
