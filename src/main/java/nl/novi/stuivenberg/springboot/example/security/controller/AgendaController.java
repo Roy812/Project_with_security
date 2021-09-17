@@ -24,7 +24,7 @@ public class AgendaController {
     //FUNCTIONS FOR USER:
     @PostMapping(value = "/add")
     public ResponseEntity<Object> addAgenda(@RequestBody addBookingDTO dto) {
-        agendaService.addAgenda(dto.userId, dto.lessonId);
+        agendaService.addAgenda(dto.userId, dto.lessonId, dto.title);
         return ResponseEntity.ok("Agenda added");
     }
 

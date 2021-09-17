@@ -3,6 +3,7 @@ package nl.novi.stuivenberg.springboot.example.security.controller;
 import nl.novi.stuivenberg.springboot.example.security.domain.Lesson;
 import nl.novi.stuivenberg.springboot.example.security.domain.Review;
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
+import nl.novi.stuivenberg.springboot.example.security.dto.changePasswordDTO;
 import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
 import nl.novi.stuivenberg.springboot.example.security.service.UserService;
 import nl.novi.stuivenberg.springboot.example.security.service.UserServicePreAuth;
@@ -29,10 +30,10 @@ public class UserController {
 
     //FUNCTIONS USER:
     @PatchMapping(value = "/password/id/{id}")
-    public ResponseEntity<Object> changeUserPassword(@PathVariable("id") long id, @RequestBody String newPassword) {
+    public ResponseEntity<Object> changeUserPassword(@PathVariable("id") long id, @RequestBody changePasswordDTO dto) {
 //        userService.changePassword(newPassword, id); OLD!!
 //        return ResponseEntity.ok("Password updated from user with id: " + id); OLD!!
-        userServicePreAuth.changePassword(newPassword, id);
+        userServicePreAuth.changePassword(dto.newPassword, id);
         return ResponseEntity.ok("Password changed");
     }
 
@@ -49,7 +50,7 @@ public class UserController {
         return ResponseEntity.ok("Photo Accepted");
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/delete/id/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") long userId) {
         userServicePreAuth.removeUser(userId);
         return ResponseEntity.ok("User deleted with id: " + userId);

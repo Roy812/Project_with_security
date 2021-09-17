@@ -18,8 +18,8 @@ public class AgendaServicePreAuth {
 
     //FUNCTIONS FOR USER:
     @PreAuthorize("hasRole('USER')")
-    public String addAgenda(Long userId, Long lessonId) {
-        agendaService.bookClass(userId, lessonId);
+    public String addAgenda(Long userId, Long lessonId, String title) {
+        agendaService.bookClass(userId, lessonId, title);
         return "Agenda added with " + lessonId + " To user with Id: " + userId;
     }
 
