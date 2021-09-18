@@ -1,7 +1,5 @@
 # Back-end instructies F.C.
 
-**Belangrijk!: Lees eerst de gehele handleiding F.C. en lees daarna dit bestand.**
-
 Dit bestand bevat instructies voor het werken met Springboot Security en REST Endpoints. Lees de instructies stap voor stap, zo weet je zeker dat alles goed ingesteld staat. Zorg ervoor dat je de gehele handleiding hebt gelezen voordat je begint met het doen van API requests met Postman.
 
 We gaan ook een kijk te nemen naar welke gebruikers en gebruikersrollen aanwezig zijn in de applicatie, deze zijn opgenomen in hoofdstuk 'Gebruikers en gebruiksrollen'. 
