@@ -1,35 +1,73 @@
-# Spring security voorbeeld
-Een inleiding
+# Back-end instructies F.C.
+
+**Belangrijk!: Lees eerst de gehele handleiding F.C. en lees daarna dit bestand.**
+
+Dit bestand bevat instructies voor het werken met Springboot Security en REST Endpoints. Lees de instructies stap voor stap, zo weet je zeker dat alles goed ingesteld staat. Zorg ervoor dat je de gehele handleiding hebt gelezen voordat je begint met het doen van API requests met Postman.
+
+We gaan ook een kijk te nemen naar welke gebruikers en gebruikersrollen aanwezig zijn in de applicatie, deze zijn opgenomen in hoofdstuk 'Gebruikers en gebruiksrollen'. 
+Het is belangrijk om te begrijpen welke functies mogelijk zijn bij elke gebruikersrol. Deze functies worden beschreven in het hoofdstuk 'REST Endpoints'.
+
+Tot slot kan in het programma Postman API requests gedaan worden met behulp van de JSON-voorbeelden uit het hoofdstuk 'JSON-voorbeelden'. Om dit te kunnen doen is het van belang om het project uit IntelliJ gestart te hebben (d.m.v. de button ‘Run’), ook moet de gekoppelde server in PostgreSQL online zijn.
+
 
 ## Inhoud
- * [Voorbereiding](#voorbereiding)
- * [Korte uitleg](#korte-uitleg)
-    * [Gebruikersrollen](#gebruikersrollen)
-    * [Rest endpoints](#rest-endpoints)
- * [Hoe te gebruiken](#hoe-te-gebruiken)
-    * [Gebruiker aanmaken](#gebruiker-aanmaken)
-    * [Inloggen](#inloggen)
-    * [Rest endpoint benaderen met access-token](#rest-endpoint-benaderen-met-access-token)
- * [Beveiligingslek](#beveiligingslek) 
- * [Uitleg code](#uitleg-code)
-    * [De payload-package](#de-payload-package-dto)
-    * [Repository package](#repository-package)
+ * [Voorbereiding database](#voorbereiding)
+ * [Gebruikers en rollen](#Gebruikers-en-rollen)
+ * [REST Endpoints](#Rest-endpoints)
+ * [JSON-voorbeelden](#JSON-voorbeelden)
+    * [AuthController](#AuthController)
+    * [UserController](#UserController)
+    * [ReviewController](#ReviewController)
+    * [AgendaController](#AgendaController)
+    * [LessonController](#LessonController)
+    * [ExceptionController](#ExceptionController)
+
     
-## Voorbereiding
- * Pas de databaseinstellingen aan in `src/main/resources/application.properties`
-    * Tip: Maak een nieuwe database aan voor deze code.
- * Start de applicatie: `mvnw spring-boot:run`
+## Voorbereiding database
+Open in het project de map resources -- > application.properties. Zie onderstaand voorbeeld:
 
-De applicatie is nu klaar voor gebruik.
+![database_instellen](img/database_instellen.png)
 
-## Korte uitleg 
-Dit project is een Spring security voorbeeld, waar een gebruiker geregistreerd kan worden, kan inloggen en vervolgens 
-met de rest endpoint kan communiceren waar hij de authorisatie voor heeft.
+Vul op regel 4 achteraan de URL de naam toe van de database in PostgreSQL die is aangemaakt.
+*NB: PostgreSQL maakt altijd een standaard database aan genaamd postgres.
+Vul het wachtwoord uit de **_"Installatiehandleiding stap 6 – Intallatie (PostgreSQL)"_** in bij spring.datasource.password.
 
-### Gebruikersrollen
+De database is gekoppeld en de applicatie is nu klaar voor gebruik.
+* Start de applicatie: `mvnw spring-boot:run`
+
+**Create vs. Update**
+
+De database van PostgreSQL staat in dit project op ‘update’. Dit heeft als functie om ten alle tijden niks te verwijderen wat in de database opgeslagen staat. Daartegenover heeft de optie ‘create’ het effect dat telkens als de het project in IntelliJ opnieuw wordt gestart de database volledig leeggehaald wordt. 
+De testdata die aanwezig is in dit project staat opgeslagen in de database. Deze data zal niet verwijderd worden bij het opstarten van het programma omdat de functionaliteit zoals hierboven omschreven staat op ‘update’. Indien het gewenst is om de data te verwijderen, zet deze functie op ‘create’ door de volgende stappen te volgen:
+
+## Gebruikers en rollen
 Dit voorbeeld maakt gebruik van drie user-rollen. `user`, `mod` & `admin`. Elke gebruiker kan 0 tot meerdere rollen 
 hebben. Het is belangrijk om je te realiseren dat wanneer een gebruiker de `admin`-rol heeft dat deze dan niet
 automatisch de `user` en `mod`-rollen heeft. 
+
+Hieronder staan de verschillende gebruikersrollen omschreven en welke functies mogelijk zijn met deze rol.
+
+* ROLE_USER:
+  - Aanpassen van eigen wachtwoord.
+  - Uploaden van een profielfoto.
+  - Update van zijn eigen coins.
+  - Een les boeken, deze functie maakt een 'Agenda' aan in de database.
+  - Coins inleveren voordat een les wordt geboekt.
+  - Een review posten over een les.  
+  - Het verwijderen van zijn account.
+  - Een review vinden door middel van de 'title'. 
+  - Zich aanmelden of afmelden voor de F.C.-nieuwsbrief.  
+    
+* ROLE_ADMIN:
+  - Een gebruiker zoeken door middel van de 'userId'. 
+  - Een gebruiker zoeken door middel van de 'username'.
+  - Een gebruiker zoeken door middel van het 'password'.
+  - Een 'Review' verwijderen in de database.  
+* ROLE MODERATOR:
+  - Een 'teacherReply' toevoegen aan een 'Review' in de database.
+    
+De inloggegevens voor de gebruikers in de testdata zijn te vinden in de **_"Installatiehandleiding
+hoofdstuk 5"_**.
 
 ###### Voorbeeld 
 Je maakt een gebruiker aan met de admin-rol. Je logt in met deze gebruiker. Als je met deze gebruiker wilt communiceren
@@ -39,241 +77,341 @@ terug:
 HTTP 401 Unauthorized
 ```
 
-### Rest endpoints.
-De back-end is op de volgende end-points te bereiken:
- 1. `/api/auth/signup`
-    * Hier kun je de volgende JSON sturen om een gebruiker aan te maken.
- 2. `/api/auth/login`
-    * Hier kun je login gegevens naar sturen. Je krijgt een Authorisatie-token terug.
- 3. `/api/test/all`
-    * Iedereen kan data uit deze end-point uitlezen.
- 4. `/api/test/user`
-    * Alleen (ingelogd) gebruikers met de user-rol kunnen data uit deze API uitlezen.
- 5. `/api/test/mod`
-     * Alleen (ingelogd) gebruikers met de mod-rol kunnen data uit deze API uitlezen.
- 6. `/api/test/admin`
-     * Alleen (ingelogd) gebruikers met de admin-rol kunnen data uit deze API uitlezen.
- 
-## Hoe te gebruiken.
-Je kunt tegen de hierboven genoemde rest-points communiceren.
+## Rest endpoints
+In dit hoofdstuk worden alle end-points beschreven met JSON-voorbeelden om een API request op te kunnen stellen. De applicatie draait op localhost en werkt met https requests, het eerste deel van de request is daardoor altijd hetzelfde: https://localhost8080. Het tweede deel van de request bestaat uit de mapping, deze is aangegeven in de onderstaande voorbeelden.
+Bij het maken van API requests is het noodzakelijk dat in de header een geldige jwt token toegevoegd is. Tevens moet de juiste gebruiker ingelogd zijn om de juiste requests te kunnen maken.
 
-### Gebruiker aanmaken
-Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signup` en geef de volgende JSON in de body mee:
+### **Authenticatie**
 
-#### Gebruiker met userrol aanmaken
+De gebruiker dient als eerste request altijd een /api/auth/signin end-point te gebruiken om zo authenticatie te krijgen tot zijn toegewezen functies. 
+Het gebruiken van dit endpoint is omschreven in het eerste onderstaande JSON-voorbeeld bij hoofdstuk 8.
+
+### **Type request**
+
+Het type request is belangrijk omdat de functies hiertussen verschillen van elkaar. 
+Zie onderstaande overzicht.
+
+* **GET:** Betreft het ophalen van data.
+* **POST:** Betreft het creëren van een nieuwe instantie van een klasse/entity
+* **PATCH:** Betreft het maken van een aanpassing in een instantie van een klasse/entity.
+* **PUT:** Betreft het maken van een aanpassing in een instantie van een klasse/entity. Een belangrijk verschil met de PATCH-mapping is dat bij PUT-mapping een nieuwe instantie wordt aangemaakt in de database.
+* **DELETE:** Betreft het verwijderen van data.
+
+## JSON-voorbeelden
+Voordat we API requests kunnen gaan verzenden met Postman zijn een aantal zaken van belang. We hebben als eerste de complete mapping nodig van de functie die we willen gebruiken. 
+Vervolgens dienen we het juiste type request te selecteren zodat Postman niet een GET request gaat doen, terwijl we bijvoorbeeld een gebruiker willen registreren. 
+In de 'Body' voegen we ons JSON-object toe aan ons request, en in de 'Authorization' bepalen de manier waarop we toegang krijgen tot de informatie die we willen ontvangen/sturen. 
+Wanneer we ons API request volledig hebben ingevuld kunnen we klikken op de blauwe button 'Send' om het request te verzenden. Zie onderstaand voorbeeld:
+
+![api/auth/signup](img/Request_api_auth_signup.png)
+
+###AuthController
+* http://localhost:8080/api/auth/signup (POST-request):
+  Met deze functie kan een nieuwe gebruiker geregistreerd worden, daarbij wordt ook een gebruikersrol gekozen. 
+  Het is mogelijk om meerdere gebruikersrollen toe te schrijven indien gewenst.
+* http://localhost:8080/api/auth/signin (POST-request):
+  Met deze functie kan een gebruiker inloggen met zijn username en wachtwoord. 
+  Wanneer de gebruiker ingelogd is heeft hij toegang tot de functies die behoren tot zijn rol.
+
+###Uitwerking JSON
+**/api/auth/signup**
+1. Selecteer binnen 'Authorization'-->'No Auth'.
+2. Voeg het JSON-object toe aan de 'Body':
+
 ```json
 {
-    "username": "user",
-    "email" : "user@user.com",
+    "username": "user@user.com",
+    "email" : "test@user.com",
     "password" : "123456",
-    "role": ["user"]
+    "role": ["user"],
+    "coinBalance": 1,
+    "subscribeToNewsletter": true
 }
 ```
-#### Gebruiker met mod- en userrol aanmaken
+**Toelichting**
+De waardes bij 'username' en 'email' mogen niet al bij een andere gebruiker aanwezig zijn in de database. 
+De "coinBalance" en "subscribeToNewsletter" kunnen op voorhand een waarde meekrijgen, dit is niet verplicht. 
+Tot slot is mogelijk om meerdere rollen toe te schrijven aan één gebruiker, dit zou als volgt genoteerd worden binnen het JSON-object: "role": ["user", "mod", "admin"].
+
 ```json
 {
-    "username": "mod",
-    "email" : "mod@mod.com",
-    "password" : "123456",
-    "role": ["mod", "user"]
+  "username": "user@user.com",
+  "email" : "test@user.com",
+  "password" : "123456",
+  "role": ["user", "mod", "admin"],
+  "coinBalance": 1,
+  "subscribeToNewsletter": true
 }
 ```
-#### Gebruiker met adminrol aanmaken
+
+**/api/auth/signin**
+1. Selecteer binnen 'Authorization'-->'No Auth'.
+2. Voeg het JSON-object toe aan de 'Body':
+
 ```json
 {
-    "username": "admin",
-    "email" : "admin@admin.com",
-    "password" : "123456",
-    "role": ["admin"]
+  "username": "plaats hier de 'username' van de gebruiker",
+  "password": "plaats hier de 'password' van de gebruiker"
 }
 ```
 
-#### Gebruiker met alledrie de rollen (niet veilig)
+**Toelichting**
+
+Inloggen gebeurt altijd met de 'username' en het 'password' van de gebruiker. Wanneer de gebruiker ingelogd is heeft hij beschikking tot de functies binnen zijn rol. 
+Bij het inloggen geeft Postman een 'AccessToken' terug. Zie het onderstaande voorbeeld:
+
+![Signin_Accestoken](img/Signin_Accesstoken.png)
+
+Met deze Accesstoken(AT) kan gebruik gemaakt worden van de functies die gebruiker bezit. 
+Vul in het gepaste API request de AT in onder 'Authorization' --> 'Bearer Token'. Zie het onderstaande voorbeeld:
+
+![BearerToken_example](img/BearerToken_example.png)
+
+Klik nu op de blauwe button 'Send' om het API request te verzenden.
+
+###UserController
+* http://localhost:8080/users/newsletter/id/{id} (PATCH-request): Met deze functie kan de gebruiker met de rol 'USER' zich aanmelden of afmelden voor de nieuwsbrief.
+*NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/users/password/id/{id} (PATCH-request) De gebruiker met de rol 'USER' kan met behulp van deze functie zijn wachtwoord aanpassen. 
+  Het wachtwoord zal aangepast worden in de instantie van de gebruiker in de database entity/klasse.
+  *NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/users/upload/id/{id} (PATCH-request) Met de functie kan de gebruiker met de rol 'USER' een profielfoto uploaden bij zijn profiel van F.C.
+  *NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/users/delete/{id} (DELETE-request) Een gebruiker met de rol ‘USER’ kan met deze functie zijn account verwijderen.
+  *NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/users/subtract/coins/id/{id} (PATCH-request) Een gebruiker met de rol ‘USER’ kan met deze functie coins inleveren. 
+  De functie checkt of de gebruiker een ‘coinBalance’ heeft die hoger is dan 0.  
+  *NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/users/balance/id/{id} (PATCH-request) Een gebruiker met de rol ‘ADMIN’ kan met deze functie Coins toe voegen aan het account van een ‘USER’.
+  *NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/username/{username} (GET-request) Met deze methode kan de gebruiker met de rol ‘ADMIN’ een gebruiker opzoeken door middel van de 'username'.
+  *NB: De 'username' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{username}'.
+* http://localhost:8080/users/password/{password} (GET-request) Met deze methode kan de gebruiker met de rol ‘ADMIN’ een gebruiker opzoeken door middel van het 'password'.
+  *NB: De 'password' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{password}'.
+* http://localhost:8080/users/id/{id} (GET-request) Met deze methode kan de gebruiker met de rol ‘ADMIN’ of ‘USER’ een gebruiker opzoeken door middel van de 'userId'.
+  *NB: De 'userId' dat gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+  
+###Uitwerkingen JSON
+**/users/newsletter/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/users/password/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/users/upload/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Selecteer in de 'Body'-->'form-data' een bestand om te verzenden, belangrijk is om ook de naam 'file' in te vullen. Zie onderstaand voorbeeld:
+
+![Upload_profilePicture](img/Upload_profilePicture.png)
+
+6. Klik op de blauwe button 'Send'.
+
+**/users/delete/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/users/subtract/coins/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/users/balance/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Plaats in de 'Body'-->'raw'-->'JSON' het aantal coins dat toegevoegd moet worden aan de 'coinBalance' van de gebruiker. Zie onderstaand voorbeeld:
+
+![Update_coinbalance_user](img/Update_coinBalance_user.png)
+
+**/username/{username}**
+1. Log een gebruiker in met de rol "admin" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'username'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/users/password/{password}**
+1. Log een gebruiker in met de rol "admin" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'password'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/users/id/{id}**
+1. Log een gebruiker in met de rol "admin" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+###ReviewController
+* http://localhost:8080/users/review/add/id/{id} (POST-request) Met deze functie kan een gebruiker met de rol 'USER' een 'Review' aanmaken.
+  *NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/users/review/findby/title (GET-request) Met de functie kan een gebruiker met de rol 'USER' reviews vinden op basis van een 'title'.
+* http://localhost:8080/users/review/reply/id/{id} (PATCH-request) Met deze methode kan de gebruiker met de rol ‘MODERATOR’ kan een 'teacherReply' toevoegen aan een 'Review' in de database.
+  *NB: De 'reviewId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+* http://localhost:8080/users/review/delete/id/{id} (DELETE-request) Met deze methode kan de gebruiker met de rol ‘ADMIN’ een 'Review' verwijderen in de database.
+  *NB: De 'reviewId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+  
+###Uitwerkingen JSON
+**/users/review/add/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Plaats in de 'Body'-->'raw'-->'JSON' het volgende JSON-object:
+
+```json 
+{
+    "title": "plaats hier de 'title' van het object",
+    "review": "plaats hier de 'review' van het object",
+    "rating": "plaats hier de 'rating' van het object"
+}
+```
+*NB: De waarde van ‘title’ moet altijd ingevuld worden. De attributen "review" en "rating" mogen weggelaten worden indien gewenst.
+6. Klik op de blauwe button 'Send'.
+
+**/users/review/findby/title**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Plaats in de 'Body'-->'raw'-->'Text' de 'title' waarop gezocht moet worden. Zie onderstaand voorbeeld:
+
+![Review_findbytitle](img/Review_findbytitle.png)
+
+6. Klik op de blauwe button 'Send'.
+
+**/users/review/reply/id/{id}**
+1. Log een gebruiker in met de rol "mod" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'reviewId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/users/review/delete/id/{id}**
+1. Log een gebruiker in met de rol "admin" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'reviewId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+###AgendaController
+* http://localhost:8080/agenda/add (POST-request) De gebruiker met de rol 'USER' kan met deze functie een Agenda aanmaken in de database.
+*  http://localhost:8080/agenda/delete/id/{id} (DELETE) Met deze functie kan een Agenda verwijderd worden. Alleen een gebruiker met de rol 'ADMIN' heeft toegang hiervoor.
+  *NB: De 'agendaId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+*  http://localhost:8080/agenda/find/all (GET-request) De gebruiker met de rol ‘USER’ kan met deze functie alle boekingen opvragen.
+  
+###Uitwerkingen JSON
+**/agenda/add**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Plaats in de 'Body'-->'raw'-->'JSON' de gewenste 'userId' en 'lessonId' om deze te koppelen tot een 'Agenda'. Zie onderstaand voorbeeld:
+
+![Agenda_add](img/Agenda_add.png)
+
+```json 
+{
+    "userId": 1,
+    "lessonId": 1
+}
+```
+
+6. Klik op de blauwe button 'Send'.
+
+**/agenda/delete/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'agendaId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/agenda/find/all**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+###LessonController
+* http://localhost:8080/lesson/download/video/id/{id} (GET-request) De gebruiker met de rol 'USER' kan met deze methode de 'classVideo' downloaden.
+* http://localhost:8080/lesson/download/guide/id/{id} (GET-request) De gebruiker met de rol 'USER' kan met deze methode de 'lessonGuide' downloaden.
+* http://localhost:8080/lesson/add (POST-request) De gebruiker met de rol 'ADMIN' kan met deze functie een 'Lesson' aanmaken in de database.
+* http://localhost:8080/lesson/upload/video/id/{id} (PATCH-request) De gebruiker met de rol 'ADMIN' kan met deze functie een 'classVideo' uploaden naar de database.
+* http://localhost:8080/lesson/upload/guide/id/{id} (PATCH-request) De gebruiker met de rol 'ADMIN' kan met deze functie een 'lessonGuide' uploaden naar de database.
+
+###Uitwerkingen JSON
+**/lesson/download/video/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'lessonId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/lesson/download/guide/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'lessonId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
+**/lesson/add**
+1. Log een gebruiker in met de rol "admin" via /api/auth/signin.
+2. Plaats de juiste mapping.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Plaats in de 'Body'-->'raw'-->'JSON' het JSON-object. Zie onderstaand voorbeeld:
+
+![Lesson_add](img/Lesson_add.png)
+
 ```json
 {
-    "username": "superadmin",
-    "email" : "superadmin@admin.com",
-    "password" : "123456",
-    "role": ["admin", "mod", "user"]
+    "title": "plaats hier de 'title' van het object"
 }
 ```
+6. Klik op de blauwe button 'Send'.
 
-### Inloggen
-Wanneer je inlogt geeft de backend-server een Json WebToken terug. Bewaar deze, want deze moet je meesturen.
+**/lesson/upload/video/id/{id}**
+1. Log een gebruiker in met de rol "admin" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'lessonId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Selecteer in de 'Body'-->'form-data' een bestand om te verzenden, belangrijk is om ook de naam 'file' in te vullen. Zie onderstaand voorbeeld:
 
-Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signin` en geef de volgende JSON in de body mee:
-#### Inloggen user
-```json
-{
-    "username":"user",
-    "password":"123456"
-}
-```
+![Upload_classVideo](img/Upload_classVideo.png)
 
-#### Inloggen mod
-```json
-{
-    "username":"mod",
-    "password":"123456"
-}
-```
+6. Klik op de blauwe button 'Send'.
 
-#### Inloggen admin
-```json
-{
-    "username":"admin",
-    "password":"123456"
-}
-```
-#### Resultaat
-De backend-server communiceert het volgende (soortgelijks) terug:
-```json
-{
-    "id": 6,
-    "username": "mod3",
-    "email": "mod3@mod.com",
-    "roles": [
-        "ROLE_USER",
-        "ROLE_MODERATOR"
-    ],
-    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtb2QzIiwiaWF0IjoxNTk1NTg4MDk0LCJleHAiOjE1OTU2NzQ0OTR9.AgP4vCsgw5TMj_ePbPzMJXWWBNfFphJBHzAvTFyW9fzZ6UL-JO42pRq9puXAOlGh4hTijspAQAS-J8doHqADTA",
-    "tokenType": "Bearer"
-}
-```
+**/lesson/upload/guide/id/{id}**
+1. Log een gebruiker in met de rol "admin" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'lessonId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Selecteer in de 'Body'-->'form-data' een bestand om te verzenden, belangrijk is om ook de naam 'file' in te vullen. Zie onderstaand voorbeeld:
 
-Wil je als ingelogde gebruiker nu tegen de beveiligde rest-points aanpraten dan moet je altijd `tokenType` en
-`accesstoken` meesturen. Zie volgend kopje.
+![Upload_lessonGuide](img/Upload_lessonGuide.png)
 
-### Rest endpoint benaderen met access-token
-Op het moment dat bovenstaande is gelukt, dan heb je van de server een Bearer + access  token ontvangen. Spring security
-geeft deze uit en controleert op basis van die token wat de gebruiker wel of niet mag doen op de website. Dus willen we
-praten met één van de drie beveiligde rest endpoints, dan moeten we token type + access token meegeven in postman. Dat
-doen we zo:
+6. Klik op de blauwe button 'Send'.
 
-![Plaatje postman met Authorization](img/auth_postman_example.png)
-
-Onder het kopje headers voeg je als `Key` `Authorization` toe. Daarin zet je `<TOKEN TYPE> <SPATIE> <ACCESSTOKEN>`. 
-Zonder de <>. Zie plaatje hierboven.
-
-De volgende resultaten worden teruggegevn door de server, wanneer het succesvol is:
-
- 1. `/api/test/all`
-    * Iedereen kan data uit deze end-point uitlezen.
-    * `Public Content.`
- 2. `/api/test/user`
-    * Alleen (ingelogd) gebruikers met de user-rol kunnen data uit deze API uitlezen.
-    * `User Content.`
- 3. `/api/test/mod`
-     * Alleen (ingelogd) gebruikers met de mod-rol kunnen data uit deze API uitlezen.
-     `Moderator Board.`
- 4. `/api/test/admin`
-     * Alleen (ingelogd) gebruikers met de admin-rol kunnen data uit deze API uitlezen.
-     `Admin Board.`
-
-## Beveiligingslek
-In deze applicatie zit een beveiligingslek. Een stuk code dat nooit in productie zou mogen draaien. Kun je op basis van 
-de hierboven uitgelegde rest endpoints bepalen wat er mis is (en wat je dus zelf niet moet doen in jouw eindopdracht)?
-
-## Uitleg code
-Dit hoofdstuk legt verschillende stukken code uit.
-
-### De payload-package (DTO)
-Dit voorbeeld maakt gebruik van DTO's. DTO's zijn Data Transfer Objects. Data Transfer Objects zijn objecten die
-gebruikt worden om te communiceren tussen verschillende lagen. Deze zijn onderverdeeld in een request (te ontvangen 
-objecten) en een response (antwoord-objecten) package.
-
-#### Request package
-Hier vind je `SignupRequest.java` en `LoginRequest.java`. De eerste klasse is het object dat binnenkomt om een gebruiker
-te registreren. Het tweede object is het object dat binnenkomt om de login af te handelen. Tot nu toe hebben jullie 
-geleerd om in de Controller-klasse objecten binnen te krijgen die 1 op 1 overeenkomen met je Entity-objecten. Dat is 
-hier dus niet het geval. De controller klasse krijgt hier DTO-objecten binnen.
-
-Je ziet in de `SignUpRequest.java` nieuwe annotaties terugkomen.
- * `@NotBlank`
- * `@Size`
- * `@Email`
- 
-Deze annotaties checken de geldigheid van de attributen van het object. Je hebt hiermee dus regels opstellen waaraan het 
-DTO-object moet voldoen. Deze regels heb je opgesteld, maar die moet je ook nog afdwingen. Dat doen we in de 
-servicelaag.
-
-Dit afdwingen gebeurt in de `AuthorizationService`. Daar zijn ook twee nieuwe annotatie verschenen: `@Validator` en
-`@Valid`. Validator wordt gebruikt op klasse-niveau en de Valid-annotatie gebruiken we op parameter-niveau in de 
-methode.
-
-Met deze annotaties zeggen we tegen Spring dat in deze klasse validatie plaatsvindt (@Validator) en dat deze parameters
-gevalideerd moeten worden (@Valid). Kijk zelf eens wat er gebeurd wanneer je bijvoorbeeld een wachtwoord met vier tekens
-naar `http://localhost:8080/api/auth/signup` stuurt.
-
-Dit werkt natuurlijk allemaal niet vanzelf. Om deze code te laten werken, hebben we een extra library nodig. Deze heet
-`spring-boot-starter-validation`. Het onderstaande is dan ook aan de `pom.xml` toegevoegd.
-
-```xml
-<!-- Deze library gebruiken we om met Annotaties onze DTO's te controleren -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-validation</artifactId>
-</dependency>
-```
-
-Meer lezen over de validatie kan hier: https://www.baeldung.com/spring-boot-bean-validation. Hier zie je dat je niet 
-op DTO niveau hoeft te doen. Het kan ook op domeinklasse niveau. De foutmeldingen moeten nog wel netjes
-teruggecommuniceerd worden. Dat gebeurt nu nog niet in de code. In de eerder genoemde link wordt een voorbeeld gegeven 
-van hoe het kan.
-
-De keuze is aan jou. Ga je DTO's gebruiken of niet. Je kunt op deze manier wel per HTTP Request zeer gedetailleerde 
-regels opstellen die je vervolgens ook kunt controleren, maar daardoor krijg je wel veel code die op elkaar lijkt en
-je moet extra code opstellen om het DTO-object om te zetten naar een Domeinklasse-object. Voor `SignupRequest.java`
-gebeurt dat op dit moment  in de `AuthorizationService` - klasse. Zie code hieronder.
-
-```java
-// Create new user's account
-User user = new User(signUpRequest.getUsername(),
-    signUpRequest.getEmail(),
-    encoder.encode(signUpRequest.getPassword()));
-
-Set<String> strRoles = signUpRequest.getRole();
-Set<Role> roles = new HashSet<>();
-
-```
-
-#### Response Package
-In de response package staan, - en de naam verraadt het al een beetje- de antwoorden die de controller-laag terugstuurt.
-In dit geval alle antwoorden die niet van het datatype `String` zijn. Dit voorbeeld bevat twee klassen. 
-`MessageResponse.java` en `JwtResponse.java`. 
-
-MessageResponse is een klasse die één attribuut bevat. Dit attribuut heeft het datatype String. Deze klasse wordt dan
-ook gebruikt om of een error bericht, of een succesbericht terug te communiceren.
-
-De `JwtResponse` klasse doet iets meer. Deze klasse bevat de attributen van de User-klasse die de ontwikkelaar nodig 
-acht om terug te communiceren en de `accesstoken`. De access-token is een Json Web Token. Deze klasse wordt alleen terug
-gecommuniceerd wanneer er een geslaagde inlogpoging is geweest. 
-
-Het is daarna aan de frontend om de inlog-token te bewaren en deze mee te sturen bij elk request. Je kunt zelf voor 
-de Json webtoken hier gedeeltelijk ontcijferen: https://jwt.io/. Kijk eens wat erin staat.
-
-#### Eindopdracht
-Wat je wilt gebruiken voor je eindopdracht is hier je eigen keuze. Ik zou wel de JwtResponse klasse houden en gebruiken.
-Het gebruik van DTO's mag je zelf bepalen (en verantwoorden). Nog eens de gegevens links van dit hoofdstuk:
- * https://www.baeldung.com/spring-boot-bean-validation
- * https://jwt.io/
- 
-### Repository package
-De repository-package ziet er uit zoals jullie gewend zijn. In dit geval zijn de klasse echter niet leeg. 
-Dit komt, omdat we iets meer moeten dan alleen de standaard operaties. Om dit uit te voeren maken we gebruik van
-keywords, zodat JPA precies weet welke Query uitgevoerd moet worden. Je kunt er hier meer over vinden: 
-https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
-
-#### Voorbeeld uit de code
-In `src/main/java/nl.novi.stuivenberg.springboot.example.repository.RoleRepository` staat de volgende code:
-
-```java
-    Boolean existsByEmail(String email);
-```
-
-We zeggen hier tegen JPA, geef ons een boolean-waarde terug op basis van de gegeven String email. Maar hoe weet JPA wat 
-er verder gedaan moet worden? Dat komt door gebruik van key-woorden in de methode-naam. `existsBy` is zo'n key-woord. 
-`Email` verwijst dan naar de kolomnaam uit de tabel (en de attribuut uit de entity-klasse). 
-"# Project_with_security" 
-"# Project_with_security" 
-"# Project_with_security" 
+###ExceptionController
+Deze controller wordt niet gebruikt door middel van een API request, ook zijn er geen end-ponts. 
+De service laag gebruikt de ExceptionController om foutmeldingen te kunnen geven wanneer een API request faalt.

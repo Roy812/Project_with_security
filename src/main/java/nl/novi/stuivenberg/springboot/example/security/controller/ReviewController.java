@@ -1,6 +1,7 @@
 package nl.novi.stuivenberg.springboot.example.security.controller;
 
 import nl.novi.stuivenberg.springboot.example.security.domain.Review;
+import nl.novi.stuivenberg.springboot.example.security.dto.findReviewDTO;
 import nl.novi.stuivenberg.springboot.example.security.service.ReviewServicePreAuth;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,8 @@ public class ReviewController {
 
     //FUNCTIONS FOR ALL
     @GetMapping(value = "review/findby/title")
-    public Review getReviewByTitle(@RequestBody String title) {
-        return reviewServicePreAuth.getReviewByTitle(title);
+    public Review getReviewByTitle(findReviewDTO dto) {
+        return reviewServicePreAuth.getReviewByTitle(dto.title);
     }
 
 

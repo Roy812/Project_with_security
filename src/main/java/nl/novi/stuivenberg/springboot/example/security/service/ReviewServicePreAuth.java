@@ -35,7 +35,7 @@ public class ReviewServicePreAuth {
     }
 
     //FUNCTIONS FOR ALL
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
+    @PreAuthorize("hasAnyRole('USER' or 'ADMIN' or 'MODERATOR')")
     public Review getReviewByTitle(String title) {
         return reviewService.getReviewByTitle(title);
     }

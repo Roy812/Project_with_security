@@ -41,12 +41,6 @@ public class UserServicePreAuth {
     }
 
     @PreAuthorize("hasRole('USER')")
-    public String updateCoinBalance(long userId, Long amount) {
-        userService.updateCoinBalance(userId, amount);
-        return "Balance updated";
-    }
-
-    @PreAuthorize("hasRole('USER')")
     public String subtractCoins(long userId) {
         userService.subtractCoins(userId);
         return "Review deleted";
@@ -75,6 +69,12 @@ public class UserServicePreAuth {
     public User getUserWithId(long userId) {
         User user = userService.getUserWithId(userId);
         return user;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateCoinBalance(long userId, Long amount) {
+        userService.updateCoinBalance(userId, amount);
+        return "Balance updated";
     }
 
     //Test Functions
