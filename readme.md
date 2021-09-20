@@ -1,5 +1,8 @@
 # Back-end instructies F.C.
 
+**Link naar de Github Repository:** https://github.com/Roy812/fitness-classes_react-v1
+
+
 Dit bestand bevat instructies voor het werken met Springboot Security en REST Endpoints. Lees de instructies stap voor stap, zo weet je zeker dat alles goed ingesteld staat. Zorg ervoor dat je de gehele handleiding hebt gelezen voordat je begint met het doen van API requests met Postman.
 
 We gaan ook een kijk te nemen naar welke gebruikers en gebruikersrollen aanwezig zijn in de applicatie, deze zijn opgenomen in hoofdstuk 'Gebruikers en gebruiksrollen'. 
@@ -54,7 +57,7 @@ Hieronder staan de verschillende gebruikersrollen omschreven en welke functies m
   - Een review posten over een les.  
   - Het verwijderen van zijn account.
   - Een review vinden door middel van de 'title'. 
-  - Zich aanmelden of afmelden voor de F.C.-nieuwsbrief.  
+  - Zich aanmelden of afmelden voor de F.C.-nieuwsbrief.
     
 * ROLE_ADMIN:
   - Een gebruiker zoeken door middel van de 'userId'. 
@@ -64,16 +67,8 @@ Hieronder staan de verschillende gebruikersrollen omschreven en welke functies m
 * ROLE MODERATOR:
   - Een 'teacherReply' toevoegen aan een 'Review' in de database.
     
-De inloggegevens voor de gebruikers in de testdata zijn te vinden in de **_"Installatiehandleiding
+De inloggegevens voor de gebruikers in de testdata zijn te vinden in de **_"Installatiehandleiding -
 hoofdstuk 5"_**.
-
-###### Voorbeeld 
-Je maakt een gebruiker aan met de admin-rol. Je logt in met deze gebruiker. Als je met deze gebruiker wilt communiceren
-met een rest-endpoint dat alleen antwoord op gebruikers met de rol `user` dan geeft de applicatie de volgende error 
-terug:
-```
-HTTP 401 Unauthorized
-```
 
 ## Rest endpoints
 In dit hoofdstuk worden alle end-points beschreven met JSON-voorbeelden om een API request op te kunnen stellen. De applicatie draait op localhost en werkt met https requests, het eerste deel van de request is daardoor altijd hetzelfde: https://localhost8080. Het tweede deel van de request bestaat uit de mapping, deze is aangegeven in de onderstaande voorbeelden.
@@ -82,7 +77,7 @@ Bij het maken van API requests is het noodzakelijk dat in de header een geldige 
 ### **Authenticatie**
 
 De gebruiker dient als eerste request altijd een /api/auth/signin end-point te gebruiken om zo authenticatie te krijgen tot zijn toegewezen functies. 
-Het gebruiken van dit endpoint is omschreven in het eerste onderstaande JSON-voorbeeld bij hoofdstuk 8.
+Het gebruiken van dit endpoint is omschreven in het eerste onderstaande JSON-voorbeeld.
 
 ### **Type request**
 
@@ -127,7 +122,7 @@ Wanneer we ons API request volledig hebben ingevuld kunnen we klikken op de blau
 }
 ```
 **Toelichting**
-De waardes bij 'username' en 'email' mogen niet al bij een andere gebruiker aanwezig zijn in de database. 
+De waardes bij 'username' en 'password' mogen niet al bij een andere gebruiker aanwezig zijn in de database. 
 De "coinBalance" en "subscribeToNewsletter" kunnen op voorhand een waarde meekrijgen, dit is niet verplicht. 
 Tot slot is mogelijk om meerdere rollen toe te schrijven aan één gebruiker, dit zou als volgt genoteerd worden binnen het JSON-object: "role": ["user", "mod", "admin"].
 
@@ -153,9 +148,11 @@ Tot slot is mogelijk om meerdere rollen toe te schrijven aan één gebruiker, di
 }
 ```
 
+3. KLik op de blauwe button 'Send'.
+
 **Toelichting**
 
-Inloggen gebeurt altijd met de 'username' en het 'password' van de gebruiker. Wanneer de gebruiker ingelogd is heeft hij beschikking tot de functies binnen zijn rol. 
+Inloggen gebeurt altijd met 'username' en 'password' van de gebruiker. Wanneer de gebruiker ingelogd is heeft hij beschikking tot de functies binnen zijn rol. 
 Bij het inloggen geeft Postman een 'AccessToken' terug. Zie het onderstaande voorbeeld:
 
 ![Signin_Accestoken](img/Signin_Accesstoken.png)

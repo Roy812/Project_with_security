@@ -39,9 +39,9 @@ public class ReviewController {
     }
 
     //FUNCTIONS FOR ALL
-    @GetMapping(value = "review/findby/title")
-    public Review getReviewByTitle(findReviewDTO dto) {
-        return reviewServicePreAuth.getReviewByTitle(dto.title);
+    @GetMapping(value = "/review/findby/title/{title}")
+    public Review getReviewByTitle(@PathVariable ("title") String title) {
+        return reviewServicePreAuth.getReviewByTitle(title);
     }
 
 

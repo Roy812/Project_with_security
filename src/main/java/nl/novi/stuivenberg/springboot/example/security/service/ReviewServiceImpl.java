@@ -57,12 +57,22 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReviewByTitle(String title) {
-        try {
-            Review review = reviewRepository.findByTitle(title);
-            return review;
-        }  catch (Exception e) {
-            throw new BadRequestException();
+        Optional<Review> review = reviewRepository.findByTitle(title);
+        if(review.isPresent()) {
+            return review.get();
         }
+        throw new nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException("YOLO SWAG");
     }
+
+//    @Override
+//    public Review getReviewByTitle(String title) {
+//        try {
+//            Review review = reviewRepository.findByTitle(title);
+//            return review;
+//        }  catch (Exception e) {
+//            throw new BadRequestException();
+//        }
+//    }
+
 
 }
