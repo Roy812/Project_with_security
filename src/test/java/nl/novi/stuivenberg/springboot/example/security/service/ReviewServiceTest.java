@@ -57,7 +57,7 @@ public class ReviewServiceTest {
     }
 
     @Test
-    public void deleteAgendaSuccess() {
+    public void deleteReviewSuccess() {
         //ARRANGE
         long reviewId = 1;
         Review review = new Review();
@@ -72,7 +72,7 @@ public class ReviewServiceTest {
     }
 
     @Test
-    public void deleteAgendaThrowsException() {
+    public void deleteReviewThrowsException() {
         long reviewId = 1;
 
         Assertions.assertThrows(RecordNotFoundException.class, () -> reviewService.deleteReview(reviewId));

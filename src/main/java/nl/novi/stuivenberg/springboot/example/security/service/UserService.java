@@ -13,7 +13,7 @@ public interface UserService {
 //    Optional<User> getUser(String username);
     void uploadPicture(long id, MultipartFile file) throws IOException;
     void subscribeToNewsletter(long userId);
-    byte[] getProfilePicture(long id);
+    byte[] getUserProfilePicture(long id);
     void updateCoinBalance(long userId, Long amount);
     void subtractCoins(long userId);
 

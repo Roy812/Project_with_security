@@ -1,5 +1,9 @@
 package nl.novi.stuivenberg.springboot.example.security.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -7,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 @Table(name = "app_user")
 public class User {
 
@@ -29,10 +34,11 @@ public class User {
     @Lob
     private byte[] profilePicture;
 
-    @OneToMany (mappedBy = "user")
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Agenda> agenda;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
     @ManyToMany

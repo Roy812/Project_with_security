@@ -2,6 +2,7 @@ package nl.novi.stuivenberg.springboot.example.security.service;
 
 import nl.novi.stuivenberg.springboot.example.security.domain.Agenda;
 import nl.novi.stuivenberg.springboot.example.security.domain.Lesson;
+import nl.novi.stuivenberg.springboot.example.security.domain.Review;
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
 import nl.novi.stuivenberg.springboot.example.security.exception.RecordNotFoundException;
@@ -99,5 +100,27 @@ public class AgendaServiceTest {
         //ASSERT
         Assertions.assertThrows(RecordNotFoundException.class, () -> agendaService.deleteBooking(agendaId));
     }
+
+//    @Test
+//    public void deleteAgendaSuccess() {
+//        //ARRANGE
+//        long agendaId = 1;
+//        Agenda agenda = new Agenda();
+//
+//        //ACT
+//        when(agendaRepository.findById(agendaId)).thenReturn(Optional.of(agenda));
+//        agendaService.deleteBooking(agendaId);
+//
+//        //ASSERT
+//        verify(agendaRepository).delete(agendaCaptor.capture());
+//        Assertions.assertEquals(agendaCaptor.getValue(), agenda);
+//    }
+//
+//    @Test
+//    public void deleteAgendaThrowsException() {
+//        long bookingId = 1;
+//
+//        Assertions.assertThrows(RecordNotFoundException.class, () -> agendaService.deleteBooking(bookingId));
+//    }
 
 }

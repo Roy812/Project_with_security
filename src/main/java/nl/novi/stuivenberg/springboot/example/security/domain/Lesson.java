@@ -1,5 +1,7 @@
 package nl.novi.stuivenberg.springboot.example.security.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class Lesson {
 
     //RELATIONSHIP ANNOTATIONS
     @OneToMany (mappedBy = "lesson")
+    @JsonIgnore
     private List<Agenda> agenda;
 
 //    @ManyToOne

@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public byte[] getProfilePicture(long id) {
+    public byte[] getUserProfilePicture(long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             return user.get().getProfilePicture();

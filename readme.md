@@ -3,7 +3,7 @@
 **Link naar de Github Repository:** https://github.com/Roy812/fitness-classes_react-v1
 
 
-Dit bestand bevat instructies voor het werken met Springboot Security en REST Endpoints. Lees de instructies stap voor stap, zo weet je zeker dat alles goed ingesteld staat. Zorg ervoor dat je de gehele handleiding hebt gelezen voordat je begint met het doen van API requests met Postman.
+Dit bestand bevat instructies voor het werken met Springboot Security en REST Endpoints. Lees de instructies stap voor stap, zo weet je zeker dat alles goed ingesteld staat. Zorg ervoor dat je de gehele installatiehandleiding hebt gelezen voordat je begint met het doen van API requests met Postman.
 
 We gaan ook een kijk te nemen naar welke gebruikers en gebruikersrollen aanwezig zijn in de applicatie, deze zijn opgenomen in hoofdstuk 'Gebruikers en gebruiksrollen'. 
 Het is belangrijk om te begrijpen welke functies mogelijk zijn bij elke gebruikersrol. Deze functies worden beschreven in het hoofdstuk 'REST Endpoints'.
@@ -185,7 +185,9 @@ Klik nu op de blauwe button 'Send' om het API request te verzenden.
   *NB: De 'password' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{password}'.
 * http://localhost:8080/users/id/{id} (GET-request) Met deze methode kan de gebruiker met de rol ‘ADMIN’ of ‘USER’ een gebruiker opzoeken door middel van de 'userId'.
   *NB: De 'userId' dat gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
-  
+* http://localhost:8080/users/picture/id/{id} (GET-request) Met deze methode kan de gebruiker met de rol 'USER' zijn 'profilePicture' ophalen.  
+  *NB: De 'userId' dat gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
+
 ###Uitwerkingen JSON
 **/users/newsletter/id/{id}**
 1. Log een gebruiker in met de rol "user" via /api/auth/signin.
@@ -256,10 +258,18 @@ Klik nu op de blauwe button 'Send' om het API request te verzenden.
 4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
 5. Klik op de blauwe button 'Send'.
 
+**/users/picture/id/{id}**
+1. Log een gebruiker in met de rol "user" via /api/auth/signin.
+2. Plaats de juiste mapping inclusief de gewenste 'userId'.
+3. Selecteer het juiste type request.
+4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
+5. Klik op de blauwe button 'Send'.
+
 ###ReviewController
 * http://localhost:8080/users/review/add/id/{id} (POST-request) Met deze functie kan een gebruiker met de rol 'USER' een 'Review' aanmaken.
   *NB: De 'userId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
-* http://localhost:8080/users/review/findby/title (GET-request) Met de functie kan een gebruiker met de rol 'USER' reviews vinden op basis van een 'title'.
+* http://localhost:8080/users/review/findby/title/{title} (GET-request) Met de functie kan een gebruiker met de rol 'USER' reviews vinden op basis van een 'title'.
+  *NB: De 'title' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{title}'.
 * http://localhost:8080/users/review/reply/id/{id} (PATCH-request) Met deze methode kan de gebruiker met de rol ‘MODERATOR’ kan een 'teacherReply' toevoegen aan een 'Review' in de database.
   *NB: De 'reviewId' die gebruikt wordt om mee te zoeken moet ingevuld worden op de plaats van '{id}'.
 * http://localhost:8080/users/review/delete/id/{id} (DELETE-request) Met deze methode kan de gebruiker met de rol ‘ADMIN’ een 'Review' verwijderen in de database.
@@ -283,15 +293,12 @@ Klik nu op de blauwe button 'Send' om het API request te verzenden.
 *NB: De waarde van ‘title’ moet altijd ingevuld worden. De attributen "review" en "rating" mogen weggelaten worden indien gewenst.
 6. Klik op de blauwe button 'Send'.
 
-**/users/review/findby/title**
+**/users/review/findby/title/{title}**
 1. Log een gebruiker in met de rol "user" via /api/auth/signin.
-2. Plaats de juiste mapping.
+2. Plaats de juiste mapping inclusief 'title''.
 3. Selecteer het juiste type request.
 4. Plaats te AccessToken (AT) in de opties 'Authorization'-->'Bearer Token'.
-5. Plaats in de 'Body'-->'raw'-->'Text' de 'title' waarop gezocht moet worden. Zie onderstaand voorbeeld:
-
-![Review_findbytitle](img/Review_findbytitle.png)
-
+5. Plaats in de 'Body'-->'raw'-->'Text' de 'title' waarop gezocht moet worden.
 6. Klik op de blauwe button 'Send'.
 
 **/users/review/reply/id/{id}**
