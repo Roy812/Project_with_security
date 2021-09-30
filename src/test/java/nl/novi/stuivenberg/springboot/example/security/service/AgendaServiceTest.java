@@ -4,6 +4,7 @@ import nl.novi.stuivenberg.springboot.example.security.domain.Agenda;
 import nl.novi.stuivenberg.springboot.example.security.domain.Lesson;
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
+import nl.novi.stuivenberg.springboot.example.security.exception.RecordNotFoundException;
 import nl.novi.stuivenberg.springboot.example.security.repository.AgendaRepository;
 import nl.novi.stuivenberg.springboot.example.security.repository.LessonRepository;
 import nl.novi.stuivenberg.springboot.example.security.repository.UserRepository;
@@ -49,13 +50,14 @@ public class AgendaServiceTest {
         lesson.setId(1);
 
         Agenda agenda = new Agenda();
+        String title = "title";
         agenda.setUser(user);
         agenda.setLesson(lesson);
 
         //ACT
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(lessonRepository.findById(lesson.getId())).thenReturn(Optional.of(lesson));
-        agendaService.bookClass(user.getId(), lesson.getId());
+        agendaService.bookClass(user.getId(), lesson.getId(), title);
 
         //ASSERT
         verify(agendaRepository).save(agendaCaptor.capture());
@@ -65,10 +67,36 @@ public class AgendaServiceTest {
 
     @Test
     public void bookClassException() {
+        //ARRANGE
+        String title = "title";
         long userId = 1;
         long lessonId = 2;
 
-        Assertions.assertThrows(BadRequestException.class, () -> agendaService.bookClass(userId, lessonId));
+        //ASSERT
+        Assertions.assertThrows(BadRequestException.class, () -> agendaService.bookClass(userId, lessonId, title));
     }
 
+    @Test
+    public void deleteBookingSuccess() {
+        //ARRANGE
+        long agendaId = 1;
+        Agenda agenda = new Agenda();
+
+        //ACT
+        when(agendaRepository.findById(agendaId)).thenReturn(Optional.of(agenda));
+        agendaService.deleteBooking(agendaId);
+
+        //ASSERT
+        verify(agendaRepository).delete(agendaCaptor.capture());
+        Assertions.assertEquals(agendaCaptor.getValue(), agenda);
+    }
+
+    @Test
+    public void deleteBookingThrowsException() {
+        //ARRANGE
+        long agendaId = 1;
+
+        //ASSERT
+        Assertions.assertThrows(RecordNotFoundException.class, () -> agendaService.deleteBooking(agendaId));
+    }
 }

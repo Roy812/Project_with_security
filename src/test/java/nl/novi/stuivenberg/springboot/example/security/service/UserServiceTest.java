@@ -55,8 +55,10 @@ public class UserServiceTest {
 
     @Test
     public void findUserByIdException() {
+        //ARRANGE
         long id = 1;
 
+        //ASSERT
         Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserWithId(id));
     }
 
@@ -77,8 +79,10 @@ public class UserServiceTest {
 
     @Test
     public void findUserByUsernameException() {
+        //ARRANGE
         String username = "username";
 
+        //ASSERT
         Assertions.assertThrows(UserNotFoundException.class,() -> userService.findByUsername(username));
     }
 
@@ -98,13 +102,16 @@ public class UserServiceTest {
 
     @Test
     public void findUserByPasswordException() {
+        //ARRANGE
         String password = "password";
 
+        //ASSERT
         Assertions.assertThrows(UserNotFoundException.class, () -> userService.findByPassword(password));
     }
 
     @Test
     public void changePasswordSuccess() {
+        //ARRANGE
         String newPassword = "newPassword";
         String password = "password";
         long id = 1;
@@ -114,29 +121,24 @@ public class UserServiceTest {
         user.get().setPassword(password);
         user.get().setId(id);
 
+        //ACT
         when(userRepository.findAll()).thenReturn(list);
         when(userRepository.findById(id)).thenReturn(user);
         when(passwordEncoder.encode(newPassword)).thenReturn(newPassword);
         userService.changePassword(newPassword, id);
+
+        //ASSERT | VERIFY
         verify(userRepository).save(userCaptor.capture());
         Assertions.assertEquals(newPassword, userCaptor.getValue().getPassword());
     }
 
     @Test
     public void changePasswordException() {
+        //ARRANGE
         String newPassword = "password";
-//        String password = "password";
         long id = 1;
 
-//        List<User> list = new ArrayList<>();
-//        Optional<User> user = Optional.of(new User());
-//        user.get().setPassword(password);
-//        user.get().setId(id);
-//
-//        when(userRepository.findAll()).thenReturn(list);
-//        when(userRepository.findById(id)).thenReturn(user);
-//        when(passwordEncoder.encode(newPassword)).thenReturn(newPassword);
-
+        //ASSERT
         Assertions.assertThrows(BadRequestException.class, () -> userService.changePassword(newPassword, id));
     }
 
@@ -162,8 +164,10 @@ public class UserServiceTest {
 
     @Test
     public void deleteUserThrowsException() {
+        //ARRANGE
         long userId = 1;
 
+        //ASSERT
         Assertions.assertThrows(RecordNotFoundException.class, () -> userService.removeUser(userId));
     }
 
@@ -185,15 +189,15 @@ public class UserServiceTest {
 
     @Test
     public void subtractCoinsFromUserThrowsException() {
+        //ARRANGE
         long userId = 1;
+        User user = new User();
+        user.setCoinBalance(0L);
 
+        //ACT
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        //ASSERT
         Assertions.assertThrows(BadRequestException.class, () -> userService.subtractCoins(userId));
     }
-
-
-
-
-
-
-
 }

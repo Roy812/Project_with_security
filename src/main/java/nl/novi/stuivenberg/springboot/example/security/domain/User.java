@@ -1,7 +1,7 @@
 package nl.novi.stuivenberg.springboot.example.security.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +19,8 @@ public class User {
             name = "native",
             strategy = "native"
     )
+
+    //Attributen van deze Entity User.
     @Column(columnDefinition = "serial")
     private long id;
     private String username;
@@ -29,22 +31,28 @@ public class User {
     @Lob
     private byte[] profilePicture;
 
-    @OneToMany (mappedBy = "user")
+    //Relatie: 1 User kan zich bevinden in meerdere instanties van Agenda.
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Agenda> agenda;
 
-    @OneToMany(mappedBy = "user")
+    //Relatie: 1 User kan zich bevinden in meerdere instanties van Review.
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
+    //Relatie: Elke gebruiker kan 1 of meerdere rollen hebben.
     @ManyToMany
     @JoinTable (name = "user_role",
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    //Constructor
     public User() {
 
     }
 
+    //Constructor met arguments voor payload --> service --> AuthorizationService (die kan een gebruiker aanmaken).
     public User(String username, String email, String password, Long coinBalance, Boolean subscribeToNewsletter, byte[] profilePicture) {
         this.username = username;
         this.email = email;
@@ -54,6 +62,7 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
+    //Getters & Setters
     public long getId() {
         return id;
     }

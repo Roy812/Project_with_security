@@ -2,7 +2,6 @@ package nl.novi.stuivenberg.springboot.example.security.service;
 
 import nl.novi.stuivenberg.springboot.example.security.domain.Lesson;
 import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
-import nl.novi.stuivenberg.springboot.example.security.exception.RecordNotFoundException;
 import nl.novi.stuivenberg.springboot.example.security.repository.LessonRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -53,5 +52,4 @@ public class LessonServiceTest {
         //ASSERT
         Assertions.assertThrows(BadRequestException.class, () -> lessonService.addLesson(lesson));
     }
-
 }

@@ -9,6 +9,7 @@ import nl.novi.stuivenberg.springboot.example.security.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,13 +57,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review getReviewByTitle(String title) {
-        try {
-            Review review = reviewRepository.findByTitle(title);
-            return review;
-        }  catch (Exception e) {
-            throw new BadRequestException();
+    public List<Review> getReviewByTitle(String title) {
+        List<Review> reviews = reviewRepository.findByTitle(title);
+        if(reviews != null) {
+            return reviews;
         }
+        throw new BadRequestException();
     }
-
 }

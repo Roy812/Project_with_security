@@ -9,24 +9,33 @@ public class Agenda {
     @GeneratedValue
     private long id;
 
-    //RELATIONSHIP ANNOTATIONS
+    //Attributen van deze Entity Agenda.
+    @Column
+    private String title;
+
+    //Relatie: 1 of meerdere instanties van Agenda kunnen zich bevinden in één instantie van User.
     @ManyToOne
     private User user;
 
+    //Relatie: 1 of meerdere instanties van Agenda kunnen zich bevinden in één instantie van Lesson.
     @ManyToOne
     private Lesson lesson;
 
-    //@OneToOne
-    //@Cascade(org.hibernate.annotations.CascadeType.ALL)
-    //private User user;
-
-    //GETTERS & SETTERS
+    //Getters & Setters
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public User getUser() {

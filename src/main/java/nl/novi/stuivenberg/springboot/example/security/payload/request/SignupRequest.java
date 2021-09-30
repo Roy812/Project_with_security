@@ -1,17 +1,14 @@
 package nl.novi.stuivenberg.springboot.example.security.payload.request;
 
-import org.springframework.validation.annotation.Validated;
-
 import javax.persistence.Lob;
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
 public class SignupRequest {
 
+    //Attributen van deze Entity SignupRequest
     @NotBlank
     @Size(min = 3, max = 30)
     private String username;
@@ -27,7 +24,6 @@ public class SignupRequest {
     @Size(min = 6, max = 40)
     private String password;
 
-//    @NotBlank
     private Long coinBalance;
 
     private Boolean subscribeToNewsletter;
@@ -35,6 +31,7 @@ public class SignupRequest {
     @Lob
     private byte[] profilePicture;
 
+    //Getters & Setters
     public String getUsername() {
         return username;
     }
