@@ -1,7 +1,6 @@
 package nl.novi.stuivenberg.springboot.example.security.domain;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,15 +21,19 @@ public class Role {
             name = "native",
             strategy = "native"
     )
+
+    //Attributen van deze Entity Role.
     @Column(columnDefinition = "serial")
     private long id;
 
     @Enumerated(EnumType.STRING)
     private ERole name;
 
+    //Constructor voor de service --> AuthorizationService om een rol toe te schrijven aan een gebruiker.
     public Role() {
     }
 
+    //Getters & Setters
     public Role(ERole name) {
         this.name = name;
     }

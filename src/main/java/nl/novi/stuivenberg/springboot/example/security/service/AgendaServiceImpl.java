@@ -62,6 +62,4 @@ public class AgendaServiceImpl implements AgendaService {
             throw new RecordNotFoundException();
         }
     }
-
-
 }

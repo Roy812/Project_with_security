@@ -18,6 +18,7 @@ public class JwtResponse {
         this.roles = roles;
     }
 
+    //Getters & Setters
     public String getAccessToken() {
         return token;
     }

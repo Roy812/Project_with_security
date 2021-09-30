@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -39,7 +38,6 @@ public class UserServiceImpl implements UserService {
                     throw new BadRequestException();
                 }
             }
-
             String finalPassword = passwordEncoder.encode(newPassword);
             user.get().setPassword(finalPassword);
             userRepository.save(user.get());
@@ -47,29 +45,6 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException();
         }
     }
-
-//    @Override
-//    public User addUser(User user) {
-//        List<User> list = userRepository.findAll();
-//        for (int i = 0; i < list.size(); i++) {
-//            User user2 = list.get(i);
-//            if (user.getUsername().equals(user2.getUsername())) {
-//                throw new BadRequestException();
-//            }
-//            if (user.getPassword().equals(user2.getPassword())) {
-//                throw new BadRequestException();
-//            }
-//        }
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        userRepository.save(user);
-//        return user;
-//    }
-
-//    @Override
-//    public Optional<User> getUser(String username) {
-////        return Optional.ofNullable(userRepository.findByUsername(username));
-//        return userRepository.findByUsername(username);
-//    }
 
     @Override
     public void subscribeToNewsletter(long userId) {
@@ -81,12 +56,7 @@ public class UserServiceImpl implements UserService {
             } else {
                 user.get().setSubscribeToNewsletter(false);
             }
-//            if  (user.get().getSubscribeToNewsletter()) {
-//                user.get().setSubscribeToNewsletter(false);
-//
-//            }
             userRepository.save(user.get());
-
         } catch (Exception e) {
             throw new BadRequestException();
         }
@@ -96,8 +66,6 @@ public class UserServiceImpl implements UserService {
     public void uploadPicture(long id, MultipartFile file) throws IOException {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-//            User user2 = user.get();
-//            user2.setProfilePicture(file.getBytes());
             user.get().setProfilePicture(file.getBytes());
             userRepository.save(user.get());
         } else {
@@ -176,10 +144,7 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty()) {
             throw new RecordNotFoundException();
         } else {
-//            userRepository.deleteById(userId);
             userRepository.delete(user.get());
         }
     }
-
-
 }

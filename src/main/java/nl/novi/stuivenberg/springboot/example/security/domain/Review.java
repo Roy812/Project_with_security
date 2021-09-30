@@ -1,9 +1,7 @@
 package nl.novi.stuivenberg.springboot.example.security.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 
@@ -15,6 +13,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    //Attributen van deze Entity Review.
     @Column
     private String title;
 
@@ -27,17 +26,11 @@ public class Review {
     @Column
     private String teacherReply;
 
-
-    //RELATIONSHIP ANNOTATIONS
+    //Relatie: 1 of meerdere gebruikers kunnen zich bevinden in 1 instantie van een Review.
     @ManyToOne
     private User user;
 
-
-    //@ManyToOne
-    //@Cascade(org.hibernate.annotations.CascadeType.ALL)
-    //private User user;
-
-    //GETTERS & SETTERS
+    //Getters & Setters
     public long getId() {
         return id;
     }
@@ -85,5 +78,4 @@ public class Review {
     public void setUser(User user) {
         this.user = user;
     }
-
 }

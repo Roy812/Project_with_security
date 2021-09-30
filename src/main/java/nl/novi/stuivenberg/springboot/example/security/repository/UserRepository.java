@@ -5,19 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-/**
- * De JpaRepositories die jullie al kennen. Hier wordt gebruik gemaakt van Query Creation. Op basis van de methode naam
- * weten Spring en JPA welke query op de database uitgevoerd moet worden.
- * Hier kan meer informatie over gevonden worden:
- * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
- */
+//De klasse 'JpaRepository' is in staat om op basis van een geschreven methode een query te genereren richting de database.
 public interface UserRepository extends JpaRepository<User, Long> {
-
     Optional<User> findByUsername(String username);
     User findByPassword (String password);
     Boolean existsByUsername(String username);
-    Boolean existsByEmail(String email);
-
-
-//    Boolean existsByCoinBalance(Long coinBalance);
 }

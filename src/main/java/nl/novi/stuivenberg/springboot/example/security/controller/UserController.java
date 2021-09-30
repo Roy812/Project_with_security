@@ -1,13 +1,8 @@
 package nl.novi.stuivenberg.springboot.example.security.controller;
 
-import nl.novi.stuivenberg.springboot.example.security.domain.Lesson;
-import nl.novi.stuivenberg.springboot.example.security.domain.Review;
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.dto.changePasswordDTO;
-import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
-import nl.novi.stuivenberg.springboot.example.security.service.UserService;
 import nl.novi.stuivenberg.springboot.example.security.service.UserServiceImpl;
-import nl.novi.stuivenberg.springboot.example.security.service.UserServicePreAuth;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,19 +17,15 @@ import java.util.Optional;
 @RequestMapping("users")
 public class UserController {
 
-//    private UserService userService;
-//    private UserServicePreAuth userServicePreAuth;
-private UserServiceImpl userService;
+    private UserServiceImpl userService;
 
-//    public UserController(UserService userService, UserServicePreAuth userServicePreAuth) {
-////        this.userService = userService;
-//        this.userServicePreAuth = userServicePreAuth;
-//    }
-public UserController(UserServiceImpl userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
 }
 
-    //FUNCTIONS USER:
+    //Functies voor de gebruiker met de rol 'USER':
+
+    //Pas het wachtwoord aan op de instantie van de User in de database.
     @PatchMapping(value = "/password/id/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> changeUserPassword(@PathVariable("id") long id, @RequestBody changePasswordDTO dto) {
@@ -42,6 +33,7 @@ public UserController(UserServiceImpl userService) {
         return ResponseEntity.ok("Password changed");
     }
 
+    //Pas de voorkeur aan voor het ontvangen van de nieuwsbrief op de instantie van de User in de database.
     @PatchMapping(value = "/newsletter/id/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> subscribeToNewsletter(@PathVariable("id") long userId) {
@@ -49,6 +41,7 @@ public UserController(UserServiceImpl userService) {
         return ResponseEntity.ok("Preferences changed");
     }
 
+    //üpload een profielfoto naar de instantie van de User in de database.
     @PatchMapping(value = "/upload/id/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> uploadProfilePicture(@PathVariable ("id") long userId, @RequestParam("file") MultipartFile file) throws IOException {
@@ -56,6 +49,7 @@ public UserController(UserServiceImpl userService) {
         return ResponseEntity.ok("Photo Accepted");
     }
 
+    //Ontvang de profielfoto van een User in de database.
     @GetMapping(value = "/picture/id/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable ("id") long userId) {
@@ -63,7 +57,7 @@ public UserController(UserServiceImpl userService) {
     return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"picture\"").body(picture);
     }
 
-
+    //Verwijder een User in de database.
     @DeleteMapping(value = "/delete/id/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") long userId) {
@@ -71,6 +65,7 @@ public UserController(UserServiceImpl userService) {
         return ResponseEntity.ok("User deleted with id: " + userId);
     }
 
+    //Verminder de 'coinBalance' van de User in de database met 1.
     @PatchMapping(value = "subtract/coins/id/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Object> subtractCoinsUser(@PathVariable("id") long userId) {
@@ -78,8 +73,9 @@ public UserController(UserServiceImpl userService) {
         return ResponseEntity.ok("Coins subtracted");
     }
 
+    //Functies voor de gebruiker met de rol 'ADMIN'.
 
-    //FUNCTIONS ADMIN:
+    //Vind een gebruiker in de database op zoekcriteria van de 'username'.
     @GetMapping(value = "/username/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> findUserByUsername(@PathVariable("username") String username) {
@@ -87,6 +83,7 @@ public UserController(UserServiceImpl userService) {
         return ResponseEntity.ok(user);
     }
 
+    //Vind een gebruiker in de database op zoekcriteria van de 'password'.
     @GetMapping(value = "/password/{password}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> findUserByPassword(@PathVariable("password") String password) {
@@ -94,18 +91,22 @@ public UserController(UserServiceImpl userService) {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping(value = "/id/{id}")
-    @PreAuthorize("hasAnyRole('USER') or ('ADMIN')")
-    public ResponseEntity<Object> findUserById(@PathVariable("id") long userId) {
-        User user = userService.getUserWithId(userId);
-        return ResponseEntity.ok(user);
-    }
-
+    //Verhoog de 'coinBalance' van de gebruiker.
     @PatchMapping(value = "/balance/id/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> updateCoinBalance(@PathVariable ("id") long userId, @RequestBody Long amount) {
         userService.updateCoinBalance(userId, amount);
         return ResponseEntity.ok("Balance is updated");
+    }
+
+    //Functies voor gebruikers met één van de rollen 'USER' | 'ADMIN'.
+
+    //Vind een gebruiker in de database op zoekcriteria van de 'id'.
+    @GetMapping(value = "/id/{id}")
+    @PreAuthorize("hasAnyRole('USER') or ('ADMIN')")
+    public ResponseEntity<Object> findUserById(@PathVariable("id") long userId) {
+        User user = userService.getUserWithId(userId);
+        return ResponseEntity.ok(user);
     }
 
 }

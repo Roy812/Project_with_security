@@ -12,6 +12,7 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    //Attributen van deze Entity Lesson.
     @Column
     private String title;
 
@@ -21,15 +22,12 @@ public class Lesson {
     @Lob
     private byte[] lessonGuide;
 
-    //RELATIONSHIP ANNOTATIONS
+    //Relatie: 1 Lesson kan zich bevinden in meerdere instanties van Agenda.
     @OneToMany (mappedBy = "lesson")
     @JsonIgnore
     private List<Agenda> agenda;
 
-//    @ManyToOne
-//    private User user;
-
-    //GETTERS & SETTERS
+    //Getters & Setters
     public long getId() {
         return id;
     }
@@ -69,13 +67,4 @@ public class Lesson {
     public void setAgenda(List<Agenda> agenda) {
         this.agenda = agenda;
     }
-
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
-
 }

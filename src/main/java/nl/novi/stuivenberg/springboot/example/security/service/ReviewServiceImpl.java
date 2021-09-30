@@ -64,8 +64,4 @@ public class ReviewServiceImpl implements ReviewService {
         }
         throw new BadRequestException();
     }
-
-
-
-
 }

@@ -1,7 +1,6 @@
 package nl.novi.stuivenberg.springboot.example.security.service;
 
 import nl.novi.stuivenberg.springboot.example.security.domain.Review;
-import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.exception.BadRequestException;
 import nl.novi.stuivenberg.springboot.example.security.exception.RecordNotFoundException;
 import nl.novi.stuivenberg.springboot.example.security.repository.ReviewRepository;
@@ -49,10 +48,11 @@ public class ReviewServiceTest {
 
     @Test
     public void replyFromTeacherException() {
-        Review review = new Review();
+        //ARRANGE
         String teacherReply = "reply";
         long reviewId = 1;
 
+        //ASSERT
         Assertions.assertThrows(BadRequestException.class, () -> reviewService.teacherReply(reviewId, teacherReply));
     }
 
@@ -73,10 +73,10 @@ public class ReviewServiceTest {
 
     @Test
     public void deleteReviewThrowsException() {
+        //ARRANGE
         long reviewId = 1;
 
+        //ASSERT
         Assertions.assertThrows(RecordNotFoundException.class, () -> reviewService.deleteReview(reviewId));
     }
-
-
 }

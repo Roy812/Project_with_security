@@ -47,13 +47,6 @@ public class LessonServiceImpl implements LessonService {
         } catch (Exception e) {
             throw new BadRequestException();
         }
-
-//        Optional<User> user = userRepository.findById(id);
-//        if (user.isPresent()) {
-//            return user.get().getProfilePicture();
-//        } else {
-//            throw new RecordNotFoundException();
-//        }
     }
 
     @Override

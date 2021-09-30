@@ -1,33 +1,27 @@
 package nl.novi.stuivenberg.springboot.example.security.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import javax.persistence.*;
 
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class Agenda {
 
     @Id
     @GeneratedValue
     private long id;
 
+    //Attributen van deze Entity Agenda.
     @Column
     private String title;
 
-    //RELATIONSHIP ANNOTATIONS
+    //Relatie: 1 of meerdere instanties van Agenda kunnen zich bevinden in één instantie van User.
     @ManyToOne
     private User user;
 
+    //Relatie: 1 of meerdere instanties van Agenda kunnen zich bevinden in één instantie van Lesson.
     @ManyToOne
     private Lesson lesson;
 
-    //@OneToOne
-    //@Cascade(org.hibernate.annotations.CascadeType.ALL)
-    //private User user;
-
-    //GETTERS & SETTERS
+    //Getters & Setters
     public long getId() {
         return id;
     }
