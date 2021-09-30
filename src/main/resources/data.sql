@@ -15,11 +15,19 @@ INSERT INTO role(name) VALUES('ROLE_USER');
 INSERT INTO role(name) VALUES('ROLE_MODERATOR');
 INSERT INTO role(name) VALUES('ROLE_ADMIN');
 
--- INSERT INTO app_user (username, password) VALUES ('user@fc.nl', '$2y$12$M.CRkE0cEBMqxlESoygFGeFBtcwbh/ZYF8hM1d4NcNsC5s3uJar5a');
--- INSERT INTO app_user (username, password) VALUES ('teacher@fc.nl', '$2a$12$aj2Te5Qguo9nJfgcF8Ob2uqq4GfFf.0PEfhxJtpQWHE/mVirA/pUq');
--- INSERT INTO app_user (username, password) VALUES ('admin@fc.nl', '$2y$12$z0URDv1FPzbapk0MbpaRf.SxXU5AFFe8hBKNreHlv05j5tS5SUV8G');
---
--- INSERT INTO user_role (user_id, role_id) VALUES (1, 1);
--- INSERT INTO user_role (user_id, role_id) VALUES (2, 2);
--- INSERT INTO user_role (user_id, role_id) VALUES (3, 3);
+INSERT INTO app_user (username, password, coin_balance, subscribe_to_newsletter) VALUES ('user@fc.nl', '$2y$12$M.CRkE0cEBMqxlESoygFGeFBtcwbh/ZYF8hM1d4NcNsC5s3uJar5a', 1, false );
+INSERT INTO app_user (username, password, coin_balance, subscribe_to_newsletter) VALUES ('teacher@fc.nl', '$2a$12$aj2Te5Qguo9nJfgcF8Ob2uqq4GfFf.0PEfhxJtpQWHE/mVirA/pUq', 1, false );
+INSERT INTO app_user (username, password, coin_balance, subscribe_to_newsletter) VALUES ('admin@fc.nl', '$2y$12$z0URDv1FPzbapk0MbpaRf.SxXU5AFFe8hBKNreHlv05j5tS5SUV8G', 1, false );
+
+INSERT INTO user_role (user_id, role_id) VALUES (1, 1);
+INSERT INTO user_role (user_id, role_id) VALUES (2, 2);
+INSERT INTO user_role (user_id, role_id) VALUES (3, 3);
+
+INSERT INTO review (title, review, user_id) VALUES ('SNACKS', 'This is a review from Testdata', 1);
+INSERT INTO lesson (title) VALUES ('CICO, ITs ALL YOU NEED');
+INSERT INTO lesson (title) VALUES ('SNACKS');
+INSERT INTO lesson (title) VALUES ('TESTOSTERONE');
+INSERT INTO agenda (id, title, lesson_id, user_id) VALUES (1,'CICO, ITs ALL YOU NEED', 1, 1);
+
+
 
